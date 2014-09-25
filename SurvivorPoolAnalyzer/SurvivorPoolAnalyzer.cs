@@ -32,11 +32,8 @@ namespace SurvivorPoolAnalyzer
 
         internal void Go()
         {
-            Random rand = new Random();
             ScrapeWinPercentages();
             FillMatchups();
-
-            //foreach (SurvivorTeam team in _teams) team.NumPicks = rand.Next(0, 100);
 
             OverrideNumPicks("SD", 166);
             OverrideNumPicks("PIT", 76);
@@ -47,14 +44,6 @@ namespace SurvivorPoolAnalyzer
             OverrideNumPicks("DET", 1); 
             OverrideNumPicks("SF", 1);
             OverrideNumPicks("BAL", 1);
-            
-            OverrideNumPicks("HOU", 0);
-            OverrideNumPicks("NE", 0);
-            OverrideNumPicks("NO", 0);
-            OverrideNumPicks("GB", 0);
-            OverrideNumPicks("NYG", 0);
-            OverrideNumPicks("JAX", 0);
-            OverrideNumPicks("OAK", 0);
 
             CalculateEv();
         }
@@ -98,19 +87,9 @@ namespace SurvivorPoolAnalyzer
             {
                 team.IsPick = true;
 
-                double expectedRemaining = 0;
-                foreach (Matchup matchup in _matchups.Where(x => !x.TeamA.IsPick && !x.TeamB.IsPick))
-                {
-                    double eremAWins = matchup.TeamA.WinPercentage * matchup.TeamA.NumPicks;
-                    double eremBWins = matchup.TeamB.WinPercentage * matchup.TeamB.NumPicks;
-                    expectedRemaining += eremAWins + eremBWins;
-                }
-
-                Matchup pickMatchup = _matchups.First(x => x.TeamA.IsPick || x.TeamB.IsPick);
-                SurvivorTeam opp = pickMatchup.TeamA == team ? pickMatchup.TeamB : pickMatchup.TeamA;
+                double expectedRemaining = _matchups.Where(x => !x.TeamA.IsPick && !x.TeamB.IsPick).Sum(x => x.ExpectedSurvivors);
                 expectedRemaining += team.NumPicks + 1;
-                double ev = team.WinPercentage*PrizeTotal/expectedRemaining;
-                team.ExpectedValue = ev;
+                team.ExpectedValue = team.WinPercentage * PrizeTotal / expectedRemaining;
 
                 team.IsPick = false;
             }
@@ -153,6 +132,10 @@ namespace SurvivorPoolAnalyzer
     {
         internal SurvivorTeam TeamA { get; set; }
         internal SurvivorTeam TeamB { get; set; }
+
+        internal double ExpectedSurvivors {
+            get { return TeamA.WinPercentage*TeamA.NumPicks + TeamB.WinPercentage*TeamB.NumPicks; }
+        }
 
         internal Matchup(SurvivorTeam teamA, SurvivorTeam teamB)
         {
