@@ -42,7 +42,7 @@ namespace SurvivorPoolAnalyzer
             OverrideNumPicks("WAS", 9);
             OverrideNumPicks("ATL", 5);
             OverrideNumPicks("MIA", 4);
-            OverrideNumPicks("DET", 1); 
+            OverrideNumPicks("DET", 1);
             OverrideNumPicks("SF", 2);
             OverrideNumPicks("BAL", 1);
 
