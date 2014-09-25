@@ -16,7 +16,7 @@ namespace SurvivorPoolAnalyzer
         private readonly List<SurvivorTeam> _teams;
         private readonly List<Matchup> _matchups;
 
-        private const int PrizeTotal = 35000;
+        private const int PrizeTotal = 32865;
         private const int ScaleUpToPicks = 765;
 
         static void Main()
@@ -33,20 +33,54 @@ namespace SurvivorPoolAnalyzer
 
         internal void Go()
         {
-            ScrapeWinPercentages();
-            FillMatchups();
+            try
+            {
+                ScrapeWinPercentages();
+                FillMatchups();
 
-            OverrideNumPicks("SD", 181);
-            OverrideNumPicks("PIT", 83);
-            OverrideNumPicks("IND", 76);
-            OverrideNumPicks("WAS", 10);
-            OverrideNumPicks("ATL", 5);
-            OverrideNumPicks("MIA", 4);
-            OverrideNumPicks("SF", 3);
-            OverrideNumPicks("DET", 1);
-            OverrideNumPicks("BAL", 1);
+                OverrideNumPicks("SD", 190);
+                OverrideNumPicks("PIT", 88);
+                OverrideNumPicks("IND", 80);
+                OverrideNumPicks("WAS", 10);
+                OverrideNumPicks("ATL", 5);
+                OverrideNumPicks("MIA", 4);
+                OverrideNumPicks("SF", 3);
+                OverrideNumPicks("DET", 1);
+                OverrideNumPicks("BAL", 1);
 
-            CalculateEv();
+                OverrideWinPct("SD", .828);
+                OverrideWinPct("PIT", .732);
+                OverrideWinPct("IND", .718);
+                OverrideWinPct("NE", .656);
+                OverrideWinPct("SF", .654);
+                OverrideWinPct("MIA", .646);
+                OverrideWinPct("BAL", .627);
+                OverrideWinPct("NO", .624);
+                OverrideWinPct("HOU", .582);
+                OverrideWinPct("WAS", .579);
+                OverrideWinPct("ATL", .576);
+                OverrideWinPct("GB", .566);
+                OverrideWinPct("NYJ", .508);
+                OverrideWinPct("DET", .492);
+                OverrideWinPct("CHI", .434);
+                OverrideWinPct("MIN", .424);
+                OverrideWinPct("NYG", .421);
+                OverrideWinPct("BUF", .418);
+                OverrideWinPct("DAL", .376);
+                OverrideWinPct("CAR", .373);
+                OverrideWinPct("OAK", .354);
+                OverrideWinPct("PHI", .346);
+                OverrideWinPct("KC", .344);
+                OverrideWinPct("TEN", .282);
+                OverrideWinPct("TB", .268);
+                OverrideWinPct("JAX", .172);
+
+                CalculateEv();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
             Console.ReadLine();
         }
