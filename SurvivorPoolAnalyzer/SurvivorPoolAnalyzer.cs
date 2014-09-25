@@ -35,12 +35,12 @@ namespace SurvivorPoolAnalyzer
             ScrapeWinPercentages();
             FillMatchups();
 
-            OverrideNumPicks("SD", 166);
-            OverrideNumPicks("PIT", 76);
-            OverrideNumPicks("IND", 71);
-            OverrideNumPicks("WAS", 5);
+            OverrideNumPicks("SD", 172);
+            OverrideNumPicks("PIT", 79);
+            OverrideNumPicks("IND", 74);
+            OverrideNumPicks("WAS", 8);
             OverrideNumPicks("ATL", 5);
-            OverrideNumPicks("MIA", 3);
+            OverrideNumPicks("MIA", 4);
             OverrideNumPicks("DET", 1); 
             OverrideNumPicks("SF", 1);
             OverrideNumPicks("BAL", 1);
@@ -51,6 +51,11 @@ namespace SurvivorPoolAnalyzer
         internal void OverrideNumPicks(string team, int numPicks)
         {
             _teams.First(x => x.Name == team).NumPicks = numPicks;
+        }
+
+        internal void OverrideWinPct(string team, double winPct)
+        {
+            _teams.First(x => x.Name == team).WinPercentage = winPct;
         }
 
         internal void ScrapeWinPercentages()
