@@ -81,7 +81,9 @@ namespace SurvivorPoolAnalyzer
         internal void CalculateEv()
         {
             int numPlayers = _teams.Sum(x => x.NumPicks) + 1;
-            Console.WriteLine("Prize Pool = {0}, Entries = {1}, Entry Value = {2}\n", PrizeTotal, numPlayers, PrizeTotal/numPlayers);
+            double expectedSurvivors = _matchups.Sum(x => x.ExpectedSurvivors);
+            double expectedElimPct = 100*(numPlayers - expectedSurvivors)/numPlayers;
+            Console.WriteLine("Prize = {0}, Entries = {1}, Cur Value = {2}, Expected Elim% = {3}\n", PrizeTotal, numPlayers, Math.Round((double)PrizeTotal / numPlayers,2), Math.Round(expectedElimPct,2));
 
             foreach (SurvivorTeam team in _teams.OrderByDescending(x => x.WinPercentage))
             {
