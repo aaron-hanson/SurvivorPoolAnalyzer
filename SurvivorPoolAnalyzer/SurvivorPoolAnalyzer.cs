@@ -17,6 +17,7 @@ namespace SurvivorPoolAnalyzer
         private readonly List<Matchup> _matchups;
 
         private const int PrizeTotal = 35000;
+        private const int ScaleUpToPicks = 765;
 
         static void Main()
         {
@@ -35,14 +36,14 @@ namespace SurvivorPoolAnalyzer
             ScrapeWinPercentages();
             FillMatchups();
 
-            OverrideNumPicks("SD", 172);
-            OverrideNumPicks("PIT", 79);
-            OverrideNumPicks("IND", 74);
-            OverrideNumPicks("WAS", 8);
+            OverrideNumPicks("SD", 178);
+            OverrideNumPicks("PIT", 83);
+            OverrideNumPicks("IND", 75);
+            OverrideNumPicks("WAS", 9);
             OverrideNumPicks("ATL", 5);
             OverrideNumPicks("MIA", 4);
             OverrideNumPicks("DET", 1); 
-            OverrideNumPicks("SF", 1);
+            OverrideNumPicks("SF", 2);
             OverrideNumPicks("BAL", 1);
 
             CalculateEv();
@@ -88,7 +89,7 @@ namespace SurvivorPoolAnalyzer
             int numPlayers = _teams.Sum(x => x.NumPicks) + 1;
             double expectedSurvivors = _matchups.Sum(x => x.ExpectedSurvivors);
             double expectedElimPct = 100*(numPlayers - expectedSurvivors)/numPlayers;
-            Console.WriteLine("Prize = {0}, Entries = {1}, Cur Value = {2}, Expected Elim% = {3}\n", PrizeTotal, numPlayers, Math.Round((double)PrizeTotal / numPlayers,2), Math.Round(expectedElimPct,2));
+            Console.WriteLine("Prize = {0}, Entries = {1}, Cur Value = {2}, Expected Elim% = {3}\n", PrizeTotal, numPlayers, Math.Round((double)PrizeTotal / Math.Max(numPlayers,ScaleUpToPicks),2), Math.Round(expectedElimPct,2));
 
             foreach (SurvivorTeam team in _teams.OrderByDescending(x => x.WinPercentage))
             {
@@ -96,7 +97,8 @@ namespace SurvivorPoolAnalyzer
 
                 double expectedRemaining = _matchups.Where(x => !x.TeamA.IsPick && !x.TeamB.IsPick).Sum(x => x.ExpectedSurvivors);
                 expectedRemaining += team.NumPicks + 1;
-                team.ExpectedValue = team.WinPercentage * PrizeTotal / expectedRemaining;
+                if (ScaleUpToPicks > 0) team.ExpectedValue = (team.WinPercentage*PrizeTotal*numPlayers)/(expectedRemaining*ScaleUpToPicks);
+                else team.ExpectedValue = (team.WinPercentage*PrizeTotal)/expectedRemaining;
 
                 team.IsPick = false;
             }
