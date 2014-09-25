@@ -14,7 +14,9 @@ namespace SurvivorPoolAnalyzer
 
         private readonly WebClient _webClient;
         private readonly List<SurvivorTeam> _teams;
-        private readonly List<Matchup> _matchups; 
+        private readonly List<Matchup> _matchups;
+
+        private const int PrizeTotal = 35000;
 
         static void Main()
         {
@@ -35,22 +37,24 @@ namespace SurvivorPoolAnalyzer
             FillMatchups();
 
             //foreach (SurvivorTeam team in _teams) team.NumPicks = rand.Next(0, 100);
-            OverrideNumPicks("SD", 588);
-            OverrideNumPicks("PIT", 192);
-            OverrideNumPicks("IND", 162);
-            OverrideNumPicks("ATL", 16);
-            OverrideNumPicks("MIA", 10);
-            OverrideNumPicks("WAS", 10);
-            OverrideNumPicks("SF", 6);
-            OverrideNumPicks("BAL", 3);
-            OverrideNumPicks("HOU", 3);
-            OverrideNumPicks("DET", 3);
-            OverrideNumPicks("NE", 2);
-            OverrideNumPicks("NO", 2);
-            OverrideNumPicks("GB", 1);
-            OverrideNumPicks("NYG", 1);
-            OverrideNumPicks("JAX", 1);
-            OverrideNumPicks("OAK", 1);
+
+            OverrideNumPicks("SD", 166);
+            OverrideNumPicks("PIT", 76);
+            OverrideNumPicks("IND", 71);
+            OverrideNumPicks("WAS", 5);
+            OverrideNumPicks("ATL", 5);
+            OverrideNumPicks("MIA", 3);
+            OverrideNumPicks("DET", 1); 
+            OverrideNumPicks("SF", 1);
+            OverrideNumPicks("BAL", 1);
+            
+            OverrideNumPicks("HOU", 0);
+            OverrideNumPicks("NE", 0);
+            OverrideNumPicks("NO", 0);
+            OverrideNumPicks("GB", 0);
+            OverrideNumPicks("NYG", 0);
+            OverrideNumPicks("JAX", 0);
+            OverrideNumPicks("OAK", 0);
 
             CalculateEv();
         }
@@ -88,6 +92,8 @@ namespace SurvivorPoolAnalyzer
         internal void CalculateEv()
         {
             int numPlayers = _teams.Sum(x => x.NumPicks) + 1;
+            Console.WriteLine("Prize Pool = {0}, Entries = {1}, Entry Value = {2}\n", PrizeTotal, numPlayers, PrizeTotal/numPlayers);
+
             foreach (SurvivorTeam team in _teams.OrderByDescending(x => x.WinPercentage))
             {
                 team.IsPick = true;
@@ -103,7 +109,7 @@ namespace SurvivorPoolAnalyzer
                 Matchup pickMatchup = _matchups.First(x => x.TeamA.IsPick || x.TeamB.IsPick);
                 SurvivorTeam opp = pickMatchup.TeamA == team ? pickMatchup.TeamB : pickMatchup.TeamA;
                 expectedRemaining += team.NumPicks + 1;
-                double ev = team.WinPercentage*numPlayers/expectedRemaining;
+                double ev = team.WinPercentage*PrizeTotal/expectedRemaining;
                 team.ExpectedValue = ev;
 
                 team.IsPick = false;
