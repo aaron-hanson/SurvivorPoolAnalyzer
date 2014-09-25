@@ -36,17 +36,19 @@ namespace SurvivorPoolAnalyzer
             ScrapeWinPercentages();
             FillMatchups();
 
-            OverrideNumPicks("SD", 178);
+            OverrideNumPicks("SD", 181);
             OverrideNumPicks("PIT", 83);
-            OverrideNumPicks("IND", 75);
-            OverrideNumPicks("WAS", 9);
+            OverrideNumPicks("IND", 76);
+            OverrideNumPicks("WAS", 10);
             OverrideNumPicks("ATL", 5);
             OverrideNumPicks("MIA", 4);
+            OverrideNumPicks("SF", 3);
             OverrideNumPicks("DET", 1);
-            OverrideNumPicks("SF", 2);
             OverrideNumPicks("BAL", 1);
 
             CalculateEv();
+
+            Console.ReadLine();
         }
 
         internal void OverrideNumPicks(string team, int numPicks)
@@ -95,10 +97,8 @@ namespace SurvivorPoolAnalyzer
             {
                 team.IsPick = true;
 
-                double expectedRemaining = _matchups.Where(x => !x.TeamA.IsPick && !x.TeamB.IsPick).Sum(x => x.ExpectedSurvivors);
-                expectedRemaining += team.NumPicks + 1;
-                if (ScaleUpToPicks > 0) team.ExpectedValue = (team.WinPercentage*PrizeTotal*numPlayers)/(expectedRemaining*ScaleUpToPicks);
-                else team.ExpectedValue = (team.WinPercentage*PrizeTotal)/expectedRemaining;
+                double expectedRemaining = team.NumPicks + 1 + _matchups.Where(x => !x.TeamA.IsPick && !x.TeamB.IsPick).Sum(x => x.ExpectedSurvivors);
+                team.ExpectedValue = (team.WinPercentage*PrizeTotal*numPlayers)/(expectedRemaining*Math.Max(numPlayers,ScaleUpToPicks));
 
                 team.IsPick = false;
             }
